@@ -4,6 +4,7 @@ import { invalidDataError, notFoundError, invalidDataFormatError } from '@/error
 import addressRepository, { CreateAddressParams } from '@/repositories/address-repository';
 import enrollmentRepository, { CreateEnrollmentParams } from '@/repositories/enrollment-repository';
 import { exclude } from '@/utils/prisma-utils';
+import { AddressEnrollment } from '@/protocols';
 
 async function getAddressFromCEP(CEP?: string) {
   const result = await request.get(`${process.env.VIA_CEP_API}/${CEP}/json/`);
@@ -12,15 +13,17 @@ async function getAddressFromCEP(CEP?: string) {
     throw invalidDataFormatError();
   }
 
-  const addressData = {
-    logradouro: result.data.logradouro,
-    complemento: result.data.complemento,
-    bairro: result.data.bairro,
-    cidade: result.data.localidade,
-    uf: result.data.uf,
+  const { bairro, localidade, uf, complemento, logradouro } = result.data;
+
+  const address: AddressEnrollment = {
+    bairro,
+    cidade: localidade,
+    uf,
+    complemento,
+    logradouro,
   };
 
-  return addressData;
+  return address;
 }
 
 async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddressByUserIdResult> {
