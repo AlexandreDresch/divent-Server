@@ -4,6 +4,6 @@ import { getTypes } from '@/controllers';
 
 const ticketsRouter = Router();
 
-ticketsRouter.all('*', authenticateToken).get('/types', getTypes);
+ticketsRouter.all('*', authenticateToken).get('tickets/types', getTypes);
 
 export { ticketsRouter };
