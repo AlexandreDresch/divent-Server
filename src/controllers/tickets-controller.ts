@@ -28,3 +28,20 @@ export async function getUserTickets(req: AuthenticatedRequest, res: Response, n
     next(error);
   }
 }
+
+export async function createUserTicket(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const { userId } = req as { userId: number };
+  const { ticketTypeId } = req.body as { ticketTypeId: number };
+
+  try {
+    const ticket = await ticketsService.createUserTicket(userId, ticketTypeId);
+
+    return res.status(httpStatus.CREATED).send(ticket);
+  } catch (error) {
+    if (error.name === 'NotFoundError') {
+      return res.status(httpStatus.NOT_FOUND).send(error.message);
+    }
+
+    next(error);
+  }
+}
