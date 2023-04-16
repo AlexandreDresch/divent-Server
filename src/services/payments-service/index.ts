@@ -6,7 +6,7 @@ async function getPaymentByTicket(ticketId: number, userId: number) {
   const ticketValidation = await ticketRepository.getTicketById(ticketId);
   if (!ticketValidation) throw notFoundError();
 
-  const userTicket = await paymentRepository.findTicketOwner(ticketId, userId);
+  const userTicket = await paymentRepository.findTicketOwner(ticketId);
   if (!userTicket) throw unauthorizedError();
 
   const payment = await paymentRepository.getPaymentByTicket(ticketId);

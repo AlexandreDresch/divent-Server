@@ -6,10 +6,12 @@ async function getPaymentByTicket(ticketId: number) {
   });
 }
 
-async function findTicketOwner(ticketId: number, userId: number) {
-  return prisma.ticket.findFirst({
-    where: { id: ticketId, Enrollment: { userId } },
-    include: { Enrollment: true },
+async function findTicketOwner(ticketId: number) {
+  return prisma.payment.findFirst({
+    where: {
+      ticketId,
+    },
+    select: { Ticket: { select: { Enrollment: true } } },
   });
 }
 
