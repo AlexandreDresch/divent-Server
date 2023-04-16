@@ -1,3 +1,4 @@
+import { Payment } from '@prisma/client';
 import { notFoundError, unauthorizedError } from '@/errors';
 import { CardDataParams } from '@/protocols';
 import enrollmentRepository from '@/repositories/enrollment-repository';
@@ -9,9 +10,6 @@ async function getPaymentByTicket(ticketId: number, userId: number) {
   if (!ticketValidation) {
     throw notFoundError();
   }
-
-  // const userTicket = await paymentRepository.findTicketOwner(ticketId);
-  // if (!userTicket) throw unauthorizedError();
 
   const userTicket = await enrollmentRepository.findEnrollmentById(ticketValidation.enrollmentId);
 
@@ -40,9 +38,6 @@ async function createPayment(ticketId: number, userId: number, cardData: CardDat
     throw notFoundError();
   }
 
-  // const userTicket = await paymentRepository.findTicketOwner(ticketId);
-  // if (!userTicket) throw unauthorizedError();
-
   const userTicket = await enrollmentRepository.findEnrollmentById(ticketValidation.enrollmentId);
 
   if (!userTicket || userTicket.userId !== userId) {
@@ -51,14 +46,14 @@ async function createPayment(ticketId: number, userId: number, cardData: CardDat
 
   const ticket = await ticketRepository.getUserTickets(ticketId);
 
-  const paymentFormatted = {
+  const paymentFormatted: Omit<Payment, 'id' | 'createdAt' | 'updatedAt'> = {
     ticketId,
     value: ticket.TicketType.price,
     cardIssuer: cardData.issuer,
     cardLastDigits: cardData.number.toString().slice(-4),
   };
 
-  const payment = await paymentRepository.createPayment(ticketId, paymentFormatted);
+  const payment = await paymentRepository.createPayment(paymentFormatted);
 
   await ticketRepository.updateTicket(ticketId);
 

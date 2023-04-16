@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import { createPayment, getPaymentByTicket } from '@/controllers/payment-controller';
-import { authenticateToken, validateQuery } from '@/middlewares';
-import { createUserTicketSchema } from '@/schemas/tickets-schemas';
+import { authenticateToken, validateBody, validateQuery } from '@/middlewares';
+import { ticketIdSchema } from '@/schemas/tickets-schemas';
+import { paymentBodySchema } from '@/schemas/payments-schema';
 
 const paymentsRouter = Router();
 
 paymentsRouter
   .all('*', authenticateToken)
-  .get('/', validateQuery(createUserTicketSchema), getPaymentByTicket)
-  .post('/process', createPayment);
+  .get('/', validateQuery(ticketIdSchema), getPaymentByTicket)
+  .post('/process', validateBody(paymentBodySchema), createPayment);
 
 export { paymentsRouter };
