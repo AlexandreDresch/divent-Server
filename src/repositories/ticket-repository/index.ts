@@ -14,6 +14,14 @@ async function getUserTickets(enrollmentId: number) {
   });
 }
 
+async function getTicketById(ticketId: number) {
+  return prisma.ticket.findUnique({
+    where: {
+      id: ticketId,
+    },
+  });
+}
+
 async function createUserTicket(enrollmentId: number, ticketTypeId: number) {
   return prisma.ticket.create({
     data: {
@@ -31,6 +39,7 @@ const ticketRepository = {
   getTypes,
   getUserTickets,
   createUserTicket,
+  getTicketById,
 };
 
 export default ticketRepository;
