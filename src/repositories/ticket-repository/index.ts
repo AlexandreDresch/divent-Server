@@ -35,11 +35,23 @@ async function createUserTicket(enrollmentId: number, ticketTypeId: number) {
   });
 }
 
+async function updateTicket(ticketId: number) {
+  return prisma.ticket.update({
+    where: {
+      id: ticketId,
+    },
+    data: {
+      status: 'PAID',
+    },
+  });
+}
+
 const ticketRepository = {
   getTypes,
   getUserTickets,
   createUserTicket,
   getTicketById,
+  updateTicket,
 };
 
 export default ticketRepository;
