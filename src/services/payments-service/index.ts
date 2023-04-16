@@ -10,6 +10,8 @@ async function getPaymentByTicket(ticketId: number, userId: number) {
   if (!userTicket) throw unauthorizedError();
 
   const payment = await paymentRepository.getPaymentByTicket(ticketId);
+  if (!payment) throw unauthorizedError();
+
   return payment;
 }
 
