@@ -44,18 +44,17 @@ async function createPayment(ticketId: number, userId: number, cardData: CardDat
     throw unauthorizedError();
   }
 
-  const ticket = await ticketRepository.getUserTickets(ticketId);
+  const ticket = await ticketRepository.getTicketByEnrollmentId(ticketValidation.enrollmentId);
 
   const paymentFormatted: Omit<Payment, 'id' | 'createdAt' | 'updatedAt'> = {
-    ticketId,
+    ticketId: ticketId,
     value: ticket.TicketType.price,
     cardIssuer: cardData.issuer,
     cardLastDigits: cardData.number.toString().slice(-4),
   };
+  await ticketRepository.updateTicket(ticketId);
 
   const payment = await paymentRepository.createPayment(paymentFormatted);
-
-  await ticketRepository.updateTicket(ticketId);
 
   return payment;
 }
