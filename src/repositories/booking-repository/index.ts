@@ -1,7 +1,8 @@
 import { Booking } from '@prisma/client';
 import { prisma } from '@/config';
 
-type createBooking = Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>;
+type CreateBooking = Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>;
+type UpdateBooking = Omit<CreateBooking, 'createdAt' | 'updatedAt'>;
 
 async function getBooking(userId: number) {
   return prisma.booking.findFirst({
@@ -14,11 +15,19 @@ async function getBooking(userId: number) {
   });
 }
 
-async function createBooking({ roomId, userId }: createBooking) {
+async function createBooking({ roomId, userId }: CreateBooking) {
   return prisma.booking.create({
     data: {
-      roomId,
       userId,
+      roomId,
+    },
+  });
+}
+
+async function getRoomBooking(roomId: number) {
+  return prisma.booking.findMany({
+    where: {
+      roomId,
     },
   });
 }
@@ -26,6 +35,7 @@ async function createBooking({ roomId, userId }: createBooking) {
 const bookingRepository = {
   getBooking,
   createBooking,
+  getRoomBooking,
 };
 
 export default bookingRepository;
