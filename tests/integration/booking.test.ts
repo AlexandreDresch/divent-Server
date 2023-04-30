@@ -192,14 +192,15 @@ describe('POST /booking', () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createTicketType();
+      const ticketType = await createTicketTypeWithHotelIncluded();
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       await createPayment(ticket.id, ticketType.price);
-      const hotel = await createHotel();
-      const createdRoom = await createHotelRoom(hotel.id);
-      const body = { roomId: createdRoom.id + 999 };
 
-      await createBooking({ roomId: createdRoom.id, userId: user.id });
+      const hotel = await createHotel();
+      const hotelRoom = await createHotelRoom(hotel.id);
+      const body = { roomId: hotelRoom.id + 100 };
+
+      await createBooking({ roomId: hotelRoom.id, userId: user.id });
 
       const response = await server.post('/booking').set('Authorization', `Bearer ${token}`).send(body);
 
