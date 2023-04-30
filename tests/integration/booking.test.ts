@@ -199,9 +199,11 @@ describe('POST /booking', () => {
       const createdRoom = await createHotelRoom(hotel.id);
       const body = { roomId: createdRoom.id + 999 };
 
+      await createBooking({ roomId: createdRoom.id, userId: user.id });
+
       const response = await server.post('/booking').set('Authorization', `Bearer ${token}`).send(body);
 
-      expect(response.statusCode).toEqual(httpStatus.FORBIDDEN);
+      expect(response.statusCode).toEqual(httpStatus.NOT_FOUND);
     });
 
     it('should respond with status 404 when user does not have a booking', async () => {
