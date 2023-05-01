@@ -29,6 +29,9 @@ async function getBooking(userId: number) {
 }
 
 async function postBooking(userId: number, roomId: number) {
+  const room = await roomRepository.getRoomById(roomId);
+  if (!room) throw notFoundError();
+
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
   if (!enrollment) throw notFoundError();
 
@@ -40,13 +43,10 @@ async function postBooking(userId: number, roomId: number) {
   const booking = await bookingRepository.getBooking(userId);
   if (!booking) throw forbiddenError();
 
-  const room = await roomRepository.getRoomById(roomId);
-  if (!room) throw notFoundError();
-
-  const bookingsByRoom = await bookingRepository.getRoomBooking(booking.roomId);
+  const bookingsByRoom = await bookingRepository.getRoomBooking(booking.Room.id);
   if (room.capacity <= bookingsByRoom.length) throw forbiddenError();
 
-  const createBooking = await bookingRepository.createBooking({ userId, roomId });
+  const createBooking = await bookingRepository.createBooking({ roomId: roomId, userId: userId });
 
   const bookingData = {
     bookingId: createBooking.id,
