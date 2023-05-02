@@ -419,7 +419,7 @@ describe('PUT /booking/:bookingId', () => {
 
       expect(response.statusCode).toEqual(httpStatus.OK);
       expect(response.body).toEqual({
-        roomId: expect.any(Number),
+        bookingId: expect.any(Number),
       });
     });
   });
