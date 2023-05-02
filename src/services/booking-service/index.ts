@@ -46,7 +46,7 @@ async function postBooking(userId: number, roomId: number) {
   const bookingsByRoom = await bookingRepository.getRoomBooking(booking.Room.id);
   if (room.capacity <= bookingsByRoom.length) throw forbiddenError();
 
-  const createBooking = await bookingRepository.createBooking({ roomId: roomId, userId: userId });
+  const createBooking = await bookingRepository.createBooking(userId, roomId);
 
   const bookingData = {
     bookingId: createBooking.id,

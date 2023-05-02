@@ -34,8 +34,6 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response, ne
   const { roomId } = req.body;
   const { bookingId } = req.params;
 
-  // if (!roomId) return res.sendStatus(httpStatus.BAD_REQUEST);
-
   try {
     const booking = await bookingService.updateBooking(userId, +bookingId, +roomId);
 

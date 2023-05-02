@@ -1,7 +1,5 @@
-import { Booking } from '@prisma/client';
 import { prisma } from '@/config';
 
-type CreateBooking = Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>;
 type UpdateBooking = {
   bookingId: number;
   roomId: number;
@@ -20,7 +18,7 @@ async function getBooking(userId: number) {
   });
 }
 
-async function createBooking({ roomId, userId }: CreateBooking) {
+async function createBooking(userId: number, roomId: number) {
   return prisma.booking.create({
     data: {
       userId,
