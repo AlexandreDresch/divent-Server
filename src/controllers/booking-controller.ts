@@ -28,3 +28,19 @@ export async function postBooking(req: AuthenticatedRequest, res: Response, next
     next(error);
   }
 }
+
+export async function updateBooking(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const { userId } = req as { userId: number };
+  const { roomId } = req.body;
+  const { bookingId } = req.params;
+
+  // if (!roomId) return res.sendStatus(httpStatus.BAD_REQUEST);
+
+  try {
+    const booking = await bookingService.updateBooking(userId, +bookingId, +roomId);
+
+    return res.status(200).send(booking);
+  } catch (error) {
+    next(error);
+  }
+}
